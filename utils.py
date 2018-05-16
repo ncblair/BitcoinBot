@@ -12,35 +12,6 @@ def moving_average(a, n=3):
     return ret
 
 
-def get_average_value_per_day(array, timestamps):
-	"""
-	ARRAY: array of values
-	TIMESTAMPS: array of datetime objects that correspond to values
-
-	RETURN: average value per day, list of days
-	"""
-	num_data_on_day = 0
-	ret = [0]
-	days = [get_day(timestamps[0])]
-	for value, time in zip(array, timestamps):
-		if get_day(time)[0] == days[-1][0]:
-			num_data_on_day += 1
-			ret[-1] += value
-		else:
-			days.append(get_day(time))
-			ret[-1] = ret[-1] / num_data_on_day
-			num_data_on_day = 1
-			ret.append(value)
-	ret[-1] = ret[-1] / num_data_on_day
-	days = [day[1] for day in days]
-	return np.array(ret), np.array(days)
-
-
-
-
-def get_day(timestamp):
-	return ((timestamp.month, timestamp.day, timestamp.year), timestamp)
-
 
 def timeit(method):
     def timed(*args, **kw):

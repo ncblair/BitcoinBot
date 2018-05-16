@@ -41,14 +41,42 @@ def get_historical_data():
 	return np.genfromtxt('kraken.csv', delimiter=',')
 
 
-@utils.timeit
 def generator_historical_data():
 	"""
 	Yields historical data one line at a time
 	"""
 	with open("kraken.csv") as infile:
 	    for line in infile:
-	        yield np.genfromtxt(line, delimiter=",")
+	        yield np.array(line.split(",")).astype(float)
+
+@utils.timeit
+def get_daily_average_from_data(data):
+	"""
+	historical data input
+
+	RETURN: average value per day, list of days
+	"""
+	prices = data[:, 0]
+	ts = np.vectorize(datetime.date.fromtimestamp)(data[:, 2])
+	num_datapoints = len(ts)
+
+	dates = [ts[0]]
+	daily_prices = [prices[0]]
+	i = 1
+	for date, price in zip(ts[1:], prices[1:]):
+		if date == dates[-1]:
+			daily_prices[-1] += price
+			i += 1
+		else:
+			daily_prices[-1] /= i
+			daily_prices.append(price)
+			dates.append(date)
+			i = 1
+	daily_prices[-1] /= i
+
+	return (daily_prices, dates)
+
+
 
 @utils.timeit
 def plot_historical_data(historical_data):
@@ -65,7 +93,7 @@ def plot_historical_data(historical_data):
 	timestamps = historical_data[:, 2].T
 	timestamps = np.vectorize(datetime.datetime.fromtimestamp)(timestamps)
 
-	daily, days = utils.get_average_value_per_day(prices, timestamps)
+	daily, days = get_daily_average_from_data(historical_data)
 
 	hunnit_day_moving = utils.moving_average(daily, n=100)
 
