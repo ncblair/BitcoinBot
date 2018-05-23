@@ -14,7 +14,8 @@ import os
 import pickle
 import time
 from datetime import datetime
-
+import price
+import numpy as np
 import pandas as pd
 import requests
 
@@ -90,6 +91,9 @@ def main():
             time.sleep(15)
 
         except KeyboardInterrupt:
+            exit()
+        except ValueError:
+            np.save("./kraken.npy", np.genfromtxt('kraken.csv', delimiter=','))
             exit()
 
         finally:

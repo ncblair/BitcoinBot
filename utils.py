@@ -11,6 +11,16 @@ def moving_average(a, n=3):
 
     return ret
 
+def sigmoid(x):
+	return 1 / (1 + np.exp(-x))
+
+def squisher(x):
+	def squisher_help(single):
+		if single >= 0:
+			return 1.5 - ((1 / (1 + single)) + 1) / 2
+		else:
+			return (1 / (1 - single)) / 2
+	return np.vectorize(squisher_help)(x)
 
 
 def timeit(method):
@@ -26,13 +36,11 @@ def timeit(method):
         return result
     return timed
 
-#modified two functions from:
-#https://stackoverflow.com/questions/3288595/multiprocessing-how-to-use-pool-map-on-a-function-defined-in-a-class/21345308
 def spawn(f):
-    def fun(q,x):
+    def help_spawn(q,x):
         y = f(x)
         q.put(y)
-    return fun
+    return help_spawn
 
 #multiprocessing map for nested functions
 def parmap(f,X):

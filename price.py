@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import datetime
 import utils
+import os
 
 def get_price():
 	"""
@@ -38,7 +39,7 @@ def get_historical_data():
 	RETURN: the price of Bitcoin in USD historically as a pandas DF
 	"""
 	#get_historical_data.main()
-	return np.genfromtxt('kraken.csv', delimiter=',')
+	return np.load("kraken.npy")
 
 
 def generator_historical_data():
@@ -74,7 +75,34 @@ def get_daily_average_from_data(data):
 			i = 1
 	daily_prices[-1] /= i
 
-	return (daily_prices, dates)
+	return np.array([daily_prices, dates])
+
+def fill_empty_dates(dates, prices):
+	new_dates = []
+	new_prices = []
+
+	for i in range(len(dates) - 1):
+		date = dates[i]
+		next_date = dates[i + 1]
+		days_between = (next_date - date).days
+
+		price = prices[i]
+		next_price = prices[i + 1]
+		price_delta = next_price - price
+
+		slope = price_delta / (days_between)
+		new_dates.append(date)
+		new_prices.append(price)
+		for j in range(1, days_between):
+			new_dates.append(date + datetime.timedelta(days=j))
+			new_prices.append(price + j * slope)
+
+	new_dates.append(dates[-1])
+	new_prices.append(prices[-1])
+
+	return np.array(new_dates), np.array(new_prices)
+
+
 
 
 
