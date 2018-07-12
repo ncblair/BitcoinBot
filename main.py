@@ -21,7 +21,7 @@ def main():
 
 	experts = [user.Random_user("bob")]
 	experts += [user.N_day_trend_user(f"{n}day", n) for n in range(1, 100, 5)]
-	experts += [user.Genie("genie")]
+	# experts += [user.Genie("genie")]
 
 	results = MWU.simulate_MWU(dates, prices, experts)
 	choices, profit, regret, market_profit = results

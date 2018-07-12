@@ -43,17 +43,17 @@ class N_day_trend_user(User):
 		strategies[1:] = [movavg[i] > movavg[i - 1] for i in range(1, T)]
 		return strategies
 
-class RNN_user(User):
-	def __init__(self, username, args):
-		super().__init__(username)
-		raise NotImplementedError
-		self.nn = get_RNN(args)
+# class RNN_user(User):
+# 	def __init__(self, username, args):
+# 		super().__init__(username)
+# 		raise NotImplementedError
+# 		self.nn = get_RNN(args)
 
-	def strategy(self, dates, prices):
-		T = len(dates)
-		strategies = np.empty(shape=T)
-		predictions = np.empty(shape=T)
-		for d in dates:
+# 	def strategy(self, dates, prices):
+# 		T = len(dates)
+# 		strategies = np.empty(shape=T)
+# 		predictions = np.empty(shape=T)
+# 		for d in dates:
 			
 
 class Genie(User):
